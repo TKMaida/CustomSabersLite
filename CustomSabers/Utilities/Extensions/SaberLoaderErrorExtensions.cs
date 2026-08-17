@@ -1,4 +1,4 @@
-using SabersCore.Models;
+using CustomSabersLite.Models;
 
 namespace CustomSabersLite.Utilities.Extensions;
 

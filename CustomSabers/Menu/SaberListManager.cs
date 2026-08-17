@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -7,19 +6,16 @@ using CustomSabersLite.Menu.Views;
 using CustomSabersLite.Models;
 using CustomSabersLite.Services;
 using CustomSabersLite.Utilities.Extensions;
-using SabersCore.Models;
-using SabersCore.Services;
 using static CustomSabersLite.Utilities.Common.PluginResources;
 
 namespace CustomSabersLite.Menu;
 
 internal class SaberListManager
 {
-    private readonly IPrefabCache prefabCache;
-    private readonly ISaberMetadataCache saberMetadataCache;
+    private readonly SaberPrefabCache saberPrefabCache;
+    private readonly SaberMetadataCache saberMetadataCache;
     private readonly DirectoryManager directoryManager;
     private readonly SaberFoldersManager saberFoldersManager;
-    private readonly FavouritesManager favouritesManager;
 
     private readonly List<IListCellInfo> sortedList = [];
     private readonly Dictionary<SaberValue, int> sortedListIndexMap = [];
@@ -39,17 +35,15 @@ internal class SaberListManager
     ];
     
     public SaberListManager(
-        IPrefabCache prefabCache,
-        ISaberMetadataCache saberMetadataCache,
+        SaberPrefabCache saberPrefabCache,
+        SaberMetadataCache saberMetadataCache,
         DirectoryManager directoryManager,
-        SaberFoldersManager saberFoldersManager, 
-        FavouritesManager favouritesManager)
+        SaberFoldersManager saberFoldersManager)
     {
-        this.prefabCache = prefabCache;
+        this.saberPrefabCache = saberPrefabCache;
         this.saberMetadataCache = saberMetadataCache;
         this.directoryManager = directoryManager;
         this.saberFoldersManager = saberFoldersManager;
-        this.favouritesManager = favouritesManager;
     }
 
     public bool ShowFavourites { get; set; }
@@ -88,7 +82,7 @@ internal class SaberListManager
         saberFile.FileInfo.MoveTo(destinationFile.FullName);
 
         saberMetadataCache.Remove(saberFile.Hash);
-        prefabCache.UnloadPrefab(saberFile.Hash);
+        saberPrefabCache.UnloadSaber(saberFile.Hash);
     }
 
     public bool TrySelectSorted(int row, [NotNullWhen(true)] out IListCellInfo? cell) =>
@@ -119,8 +113,9 @@ internal class SaberListManager
         if (ShowFavourites)
         {
             list.Add(new ListUpDirectoryCellInfo(directoryManager.CustomSabers));
-            list.AddRange(GetSortedData(filterOptions with { Favourites = true})
-                .Select(meta => new ListInfoCellInfo(meta, favouritesManager.IsFavourite(meta.SaberFile))));
+            list.AddRange(saberMetadataCache
+                .GetSortedData(filterOptions with { Favourites = true})
+                .Select(meta => new ListInfoCellInfo(meta)));
             
             PopulateValueIndexMap();
             return list;
@@ -141,9 +136,10 @@ internal class SaberListManager
             list.AddRange(filterOptions.Trails ? TrailListDefaultChoices : SaberListDefaultChoices);
         }
         
-        list.AddRange(GetSortedData(filterOptions)
+        list.AddRange(saberMetadataCache
+            .GetSortedData(filterOptions)
             .Where(m => m.SaberFile.FileInfo.DirectoryName == saberFoldersManager.CurrentDirectory.FullName)
-            .Select(m => new ListInfoCellInfo(m, favouritesManager.IsFavourite(m.SaberFile))));
+            .Select(m => new ListInfoCellInfo(m)));
         
         PopulateValueIndexMap();
         return list;
@@ -155,39 +151,7 @@ internal class SaberListManager
             if (cell.TryGetSaberValue(out var v)) valueIndexMap.Add(v, i);
         });
     }
-
-    private IEnumerable<CustomSaberMetadata> GetSortedData(SaberListFilterOptions options)
-    {
-        var data = saberMetadataCache.GetRefreshedMetadata();
-        
-        if (options.Trails)
-        {
-            data = data.Where(meta => meta.HasTrails);
-        }
-
-        if (options.Favourites)
-        {
-            data = data.Where(meta => favouritesManager.IsFavourite(meta.SaberFile));
-        }
-
-        if (!string.IsNullOrWhiteSpace(options.SearchFilter))
-        {
-            data = data.Where(meta =>
-                meta.Descriptor.SaberName.Contains(options.SearchFilter, StringComparison.CurrentCultureIgnoreCase)
-                || meta.Descriptor.AuthorName.Contains(options.SearchFilter, StringComparison.CurrentCultureIgnoreCase));
-        }
-        
-        data = options.OrderBy switch
-        {
-            OrderBy.Name => data.OrderBy(x => x.Descriptor.SaberName).ThenBy(x => x.Descriptor.AuthorName),
-            OrderBy.Author => data.OrderBy(x => x.Descriptor.AuthorName).ThenBy(x => x.Descriptor.SaberName),
-            OrderBy.RecentlyAdded => data.OrderBy(x => x.SaberFile.DateAdded).ThenBy(x => x.Descriptor.SaberName),
-            _ => throw new ArgumentOutOfRangeException(nameof(options.OrderBy))
-        };
-        
-        return options.ReverseOrder ? data.Reverse() : data;
-    }
-        
+    
     private static bool TrySelect(List<IListCellInfo> list, int row, [NotNullWhen(true)] out IListCellInfo? cell) =>
         (cell = list.ElementAtOrDefault(row)) != null;
 }

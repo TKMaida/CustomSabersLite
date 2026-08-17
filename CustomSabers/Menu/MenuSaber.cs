@@ -1,9 +1,10 @@
-﻿using CustomSabersLite.Configuration;
+﻿using CustomSabersLite.Components;
+using CustomSabersLite.Configuration;
+using CustomSabersLite.Models;
+using CustomSabersLite.Services;
+using CustomSabersLite.Utilities.Common;
 using CustomSabersLite.Utilities.Extensions;
-using SabersCore.Components;
-using SabersCore.Models;
-using SabersCore.Services;
-using SabersCore.Utilities.Common;
+using SiraUtil.Zenject;
 using UnityEngine;
 
 namespace CustomSabersLite.Menu;
@@ -11,24 +12,24 @@ namespace CustomSabersLite.Menu;
 internal class MenuSaber
 {
     private readonly PluginConfig config;
-    private readonly ITrailFactory trailFactory;
+    private readonly TrailFactory trailFactory;
     private readonly Transform parent;
     
-    private MenuSaber(PluginConfig config, ITrailFactory trailFactory)
+    private MenuSaber(PluginConfig config, TrailFactory trailFactory)
     {
         this.config = config;
         this.trailFactory = trailFactory;
 
-        parent = new GameObject($"{nameof(CustomSabersLite)}{nameof(MenuSaber)}").transform;
+        parent = new GameObject("MenuLiteSaber").transform;
         parent.gameObject.SetActive(false);
     }
 
-    private ISaber? saberInstance;
-    private CustomSaberTrail[] trailInstances = [];
+    private ILiteSaber? liteSaberInstance;
+    private LiteSaberTrail[] trailInstances = [];
 
     public Transform Parent => parent;
     
-    public void ReplaceSaber(ISaber? newSaber, ITrailData[] newTrails)
+    public void ReplaceSaber(ILiteSaber? newSaber, ITrailData[] newTrails)
     {
         if (newSaber is null) return;
 
@@ -36,25 +37,27 @@ internal class MenuSaber
         newSaber.GameObject.GetComponentsInChildren<Collider>().ForEach(c => c.enabled = false);
 
         trailInstances = trailFactory.AddTrailsTo(newSaber, newTrails, 1f);
-        saberInstance = newSaber;
+        liteSaberInstance = newSaber;
     }
 
     public void UpdateTrails()
     {
-        trailInstances.ConfigureTrails(new(
-            config.DisableWhiteTrail,
-            config.OverrideTrailWidth,
-            config.TrailWidth,
-            config.OverrideTrailDuration,
-            config.TrailDuration));
+        trailInstances.ConfigureTrails(config);
     }
 
     public void UpdateSaberScale(float length, float width)
     {
-        if (saberInstance is null) return;
-        saberInstance.SetLength(length);
-        saberInstance.SetWidth(width);
+        if (liteSaberInstance is null) return;
+        liteSaberInstance.SetLength(length);
+        liteSaberInstance.SetWidth(width);
     }
+
+    public void UpdateSaberRotation(float rotation)
+    {
+        if (liteSaberInstance is null) return;
+        liteSaberInstance.SetRotation(rotation);
+    }
+
 
     public void SetParent(Transform t)
     {
@@ -63,7 +66,7 @@ internal class MenuSaber
 
     public void SetColor(Color color)
     {
-        saberInstance?.SetColor(color);
+        liteSaberInstance?.SetColor(color);
         trailInstances.ForEach(t => t.SetColor(color));
     }
 

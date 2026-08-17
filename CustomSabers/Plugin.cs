@@ -1,5 +1,7 @@
-﻿using CustomSabersLite.Configuration;
+﻿using System.Threading.Tasks;
+using CustomSabersLite.Configuration;
 using CustomSabersLite.Installers;
+using CustomSabersLite.Utilities.Common;
 using Hive.Versioning;
 using IPA;
 using IPA.Config.Stores;
@@ -20,7 +22,18 @@ internal class Plugin
     {
         Version = pluginMetadata.HVersion;
         Logger.SetLogger(logger);
+        Task.Run(() => InitAsync(logger, config, zenjector));
+    }
+
+    private async Task InitAsync(IPALogger logger, Config config, Zenjector zenjector)
+    {
+        if (!await CustomSaberUtils.LoadCustomSaberAssembly())
+        {
+            return;
+        }
+
         zenjector.UseLogger(logger);
+
         zenjector.Install<AppInstaller>(Location.App, config.Generated<PluginConfigModel>());
         zenjector.Install<MenuInstaller>(Location.Menu);
         zenjector.Install<PlayerInstaller>(Location.Player);

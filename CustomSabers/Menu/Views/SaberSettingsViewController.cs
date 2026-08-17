@@ -2,6 +2,7 @@
 using BeatSaberMarkupLanguage.ViewControllers;
 using CustomSabersLite.Configuration;
 using CustomSabersLite.Utilities.Extensions;
+
 using Zenject;
 
 namespace CustomSabersLite.Menu.Views;
@@ -105,6 +106,25 @@ internal class SaberSettingsViewController : BSMLAutomaticViewController, IShare
         set
         {
             config.SaberWidth = value;
+            previewManager.UpdateSaberModels();
+        }
+    }
+
+    public bool OverrideSaberRotation
+    {
+        get => config.OverrideSaberRotation;
+        set
+        {
+            config.OverrideSaberRotation = value;
+            previewManager.UpdateSaberModels();
+        }
+    }
+    public float SaberRotation
+    {
+        get => config.SaberRotation;
+        set
+        {
+            config.SaberRotation = value;
             previewManager.UpdateSaberModels();
         }
     }

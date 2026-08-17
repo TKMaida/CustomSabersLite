@@ -1,6 +1,6 @@
 using System;
+using CustomSabersLite.Models;
 using CustomSabersLite.Utilities.Extensions;
-using SabersCore.Models;
 using UnityEngine;
 using Zenject;
 
@@ -66,6 +66,10 @@ internal class StaticPreviewManager : IInitializable, IDisposable
         staticPreviewTrailManager.UpdateTrails();
     }
 
+    public void UpdateSaberRotation(float rotation)
+    {
+        staticPreviewSaberManager.UpdateSaberRotation(rotation);
+    }
     public void SetColor(Color colorLeft, Color colorRight)
     {
         staticPreviewSaberManager.SetColor(colorLeft, colorRight);

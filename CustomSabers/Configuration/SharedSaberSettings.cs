@@ -1,4 +1,6 @@
-﻿namespace CustomSabersLite.Configuration;
+﻿using UnityEngine;
+
+namespace CustomSabersLite.Configuration;
 
 internal interface ISharedSaberSettings
 {
@@ -11,6 +13,8 @@ internal interface ISharedSaberSettings
     public float SaberLength { get; set; }
     public bool OverrideSaberWidth { get; set; }
     public float SaberWidth { get; set; }
+    public bool OverrideSaberRotation { get; set; }
+    public float SaberRotation { get; set; }
     public bool EnableCustomEvents { get; set; }
 
     internal static string[] PropertyNames { get; } =
@@ -24,6 +28,8 @@ internal interface ISharedSaberSettings
         nameof(SaberLength),
         nameof(OverrideSaberWidth),
         nameof(SaberWidth),
+        nameof(OverrideSaberRotation),
+        nameof(SaberRotation),
         nameof(EnableCustomEvents)
     ];
 }

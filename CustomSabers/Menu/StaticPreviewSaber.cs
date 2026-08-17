@@ -1,4 +1,4 @@
-using SabersCore.Models;
+using CustomSabersLite.Models;
 using UnityEngine;
 
 namespace CustomSabersLite.Menu;
@@ -6,12 +6,13 @@ namespace CustomSabersLite.Menu;
 internal class StaticPreviewSaber
 {
     private readonly Transform root = new GameObject("StaticPreviewSaber").transform;
-    private ISaber? saber;
+    private ILiteSaber? saber;
     
     public void SetParent(Transform parent) => root.SetParent(parent, false);
-    public void ReplaceSaber(ISaber? newSaber)
+    public void ReplaceSaber(ILiteSaber? newSaber)
     {
         saber = newSaber;
+        
         saber?.SetParent(root);
     }
     public void SetColor(Color color) => saber?.SetColor(color);
@@ -20,5 +21,10 @@ internal class StaticPreviewSaber
         if (saber is null) return;
         saber.SetLength(length);
         saber.SetWidth(width);
+    }
+    public void SetRotation(float rotation)
+    {
+        if (saber is null) return;
+        saber.SetRotation(rotation);
     }
 }

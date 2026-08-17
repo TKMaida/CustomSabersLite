@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CustomSabersLite.Configuration;
+using CustomSabersLite.Models;
 using CustomSabersLite.Services;
 using CustomSabersLite.Utilities.Extensions;
-using SabersCore.Models;
 using UnityEngine;
 
 namespace CustomSabersLite.Menu;
@@ -82,8 +82,11 @@ internal class SaberPreviewManager
         if (!previewActive) return;
         float length = config.OverrideSaberLength ? config.SaberLength : 1f;
         float width = config.OverrideSaberWidth ? config.SaberWidth : 1f;
+        float rotation = config.OverrideSaberRotation ? config.SaberRotation : 0f;
         staticPreviewManager.UpdateSaberScale(length, width);
+        staticPreviewManager.UpdateSaberRotation(rotation);
         menuSaberManager.UpdateSaberScale(length, width);
+        menuSaberManager.UpdateSaberRotation(rotation);
     }
 
     public void SetPreviewActive(bool active)
@@ -106,7 +109,7 @@ internal class SaberPreviewManager
         animations.AddRange(coroutineStarter.StartCoroutines(leftAnim, rightAnim));
         return;
         
-        IEnumerator AnimateSaberToParent(ISaber? saber, Transform target)
+        IEnumerator AnimateSaberToParent(ILiteSaber? saber, Transform target)
         {
             if (saber is null) yield break;
             var transform = saber.GameObject.transform;

@@ -1,4 +1,4 @@
-﻿using SabersCore.Models;
+﻿using CustomSabersLite.Models;
 using UnityEngine;
 
 namespace CustomSabersLite.Menu;
@@ -30,5 +30,11 @@ internal class StaticPreviewSaberManager
     {
         leftSaber.SetScale(length, width);
         rightSaber.SetScale(length, width);
+    }
+    
+    public void UpdateSaberRotation(float rotation)
+    {
+        leftSaber.SetRotation(rotation);
+        rightSaber.SetRotation(rotation);
     }
 }

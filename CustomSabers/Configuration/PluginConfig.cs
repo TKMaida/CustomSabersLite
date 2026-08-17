@@ -1,5 +1,6 @@
 using CustomSabersLite.Models;
 using CustomSabersLite.Utilities.Extensions;
+using UnityEngine;
 
 namespace CustomSabersLite.Configuration;
 
@@ -22,7 +23,11 @@ internal class PluginConfig
     public float SaberLength { get; set; }
     
     public bool OverrideSaberWidth { get; set; }
+
     public float SaberWidth { get; set; }
+
+    public bool OverrideSaberRotation { get; set; }
+    public float SaberRotation { get; set; }
         
     public bool EnableCustomEvents { get; set; }
 
@@ -45,6 +50,8 @@ internal class PluginConfig
         pluginConfigModel.SaberLength,
         pluginConfigModel.OverrideSaberWidth,
         pluginConfigModel.SaberWidth,
+        pluginConfigModel.OverrideSaberRotation,
+        pluginConfigModel.SaberRotation,
         pluginConfigModel.EnableCustomEvents);
 
     private PluginConfig(
@@ -60,6 +67,8 @@ internal class PluginConfig
         float saberLength,
         bool overrideSaberWidth,
         float saberWidth,
+        bool overrideSaberRotation,
+        float saberRotation,
         bool enableCustomEvents)
     {
         Enabled = enabled;
@@ -74,6 +83,8 @@ internal class PluginConfig
         SaberLength = saberLength;
         OverrideSaberWidth = overrideSaberWidth;
         SaberWidth = saberWidth;
+        OverrideSaberRotation = overrideSaberRotation;
+        SaberRotation = saberRotation;
         EnableCustomEvents = enableCustomEvents;
     }
 }

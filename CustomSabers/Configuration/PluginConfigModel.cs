@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
+using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace CustomSabersLite.Configuration;
@@ -24,6 +25,9 @@ internal class PluginConfigModel
     
     public bool OverrideSaberWidth { get; set; } = false;
     public float SaberWidth { get; set; } = 1f;
+
+    public bool OverrideSaberRotation { get; set; } = false;
+    public float SaberRotation { get; set; } = 0f;
         
     public bool EnableCustomEvents { get; set; } = true;
 

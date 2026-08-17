@@ -30,6 +30,8 @@ internal class PluginConfigManager : IDisposable
         pluginConfigModel.SaberLength = pluginConfig.SaberLength;
         pluginConfigModel.OverrideSaberWidth = pluginConfig.OverrideSaberWidth;
         pluginConfigModel.SaberWidth = pluginConfig.SaberWidth;
+        pluginConfigModel.OverrideSaberRotation = pluginConfig.OverrideSaberRotation;
+        pluginConfigModel.SaberRotation = pluginConfig.SaberRotation;
         pluginConfigModel.EnableCustomEvents = pluginConfig.EnableCustomEvents;
         
         // Notify the config changed so that BSIPA saves it to the file

@@ -1,5 +1,5 @@
-﻿using CustomSabersLite.Services;
-using SabersCore.Models;
+﻿using CustomSabersLite.Models;
+using CustomSabersLite.Services;
 using UnityEngine;
 using Zenject;
 
@@ -42,6 +42,12 @@ internal class MenuSaberManager
     {
         leftSaber.UpdateSaberScale(length, width);
         rightSaber.UpdateSaberScale(length, width);
+    }
+
+    public void UpdateSaberRotation(float rotation)
+    {
+        leftSaber.UpdateSaberRotation(rotation);
+        rightSaber.UpdateSaberRotation(rotation);
     }
 
     public void SetColor(Color left, Color right)

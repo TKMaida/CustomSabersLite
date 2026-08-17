@@ -5,10 +5,10 @@ using BeatSaberMarkupLanguage.Attributes;
 using CustomSabersLite.Configuration;
 using CustomSabersLite.Menu.Components;
 using CustomSabersLite.Models;
+using CustomSabersLite.Services;
 using CustomSabersLite.Utilities.Extensions;
 using HMUI;
 using JetBrains.Annotations;
-using SabersCore.Services;
 using UnityEngine;
 
 namespace CustomSabersLite.Menu.Views;
@@ -17,7 +17,7 @@ namespace CustomSabersLite.Menu.Views;
 internal class GameplaySetupTab : IDisposable, INotifyPropertyChanged, ISharedSaberSettings
 {
     private readonly PluginConfig config;
-    private readonly ISaberMetadataLoader saberMetadataLoader;
+    private readonly MetadataCacheLoader metadataCacheLoader;
     private readonly ICoroutineStarter coroutineStarter;
     private readonly SaberListManager saberListManager;
 
@@ -25,12 +25,12 @@ internal class GameplaySetupTab : IDisposable, INotifyPropertyChanged, ISharedSa
 
     public GameplaySetupTab(
         PluginConfig config,
-        ISaberMetadataLoader saberMetadataLoader,
+        MetadataCacheLoader metadataCacheLoader,
         ICoroutineStarter coroutineStarter,
         SaberListManager saberListManager)
     {
         this.config = config;
-        this.saberMetadataLoader = saberMetadataLoader;
+        this.metadataCacheLoader = metadataCacheLoader;
         this.coroutineStarter = coroutineStarter;
         this.saberListManager = saberListManager;
     }
@@ -41,7 +41,7 @@ internal class GameplaySetupTab : IDisposable, INotifyPropertyChanged, ISharedSa
     [UIAction("#post-parse")]
     private void PostParse()
     {
-        saberMetadataLoader.LoadingProgressChanged += LoadingProgressChanged;
+        metadataCacheLoader.LoadingProgressChanged += LoadingProgressChanged;
         saberList.DidActivate += Activated;
         RefreshList();
     }
@@ -106,6 +106,17 @@ internal class GameplaySetupTab : IDisposable, INotifyPropertyChanged, ISharedSa
         set => config.SaberWidth = value;
     }
 
+    public bool OverrideSaberRotation
+    {
+        get => config.OverrideSaberRotation;
+        set => config.OverrideSaberRotation = value;
+    }
+    public float SaberRotation
+    {
+        get => config.SaberRotation;
+        set => config.SaberRotation = value;
+    }
+
     public bool EnableCustomEvents
     {
         get => config.EnableCustomEvents;
@@ -160,7 +171,7 @@ internal class GameplaySetupTab : IDisposable, INotifyPropertyChanged, ISharedSa
         saberList.ScrollToCellWithIdx(selectedSaberIndex, TableView.ScrollPositionType.Center, true);
     }
 
-    private void LoadingProgressChanged(MetadataLoaderProgress progress)
+    private void LoadingProgressChanged(MetadataCacheLoader.Progress progress)
     {
         if (progress.Completed) RefreshList();
     }
@@ -172,7 +183,7 @@ internal class GameplaySetupTab : IDisposable, INotifyPropertyChanged, ISharedSa
 
     public void Dispose()
     {
-        saberMetadataLoader.LoadingProgressChanged -= LoadingProgressChanged;
+        metadataCacheLoader.LoadingProgressChanged -= LoadingProgressChanged;
         if (saberList != null) saberList.DidActivate -= Activated;
     }
 }

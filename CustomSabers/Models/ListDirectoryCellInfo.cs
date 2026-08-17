@@ -1,6 +1,5 @@
 using System.IO;
 using CustomSabersLite.Utilities.Common;
-using SabersCore.Models;
 using UnityEngine;
 
 namespace CustomSabersLite.Models;
@@ -14,7 +13,7 @@ internal class ListDirectoryCellInfo : IListCellInfo
     }
     
     public RichTextString NameText { get; }
-    public RichTextString AuthorText => RichTextString.Unknown;
+    public RichTextString AuthorText => RichTextString.Empty;
     public Sprite Icon => PluginResources.FolderIcon;
     public bool IsFavourite => false;
     

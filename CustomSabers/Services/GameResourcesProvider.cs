@@ -11,13 +11,11 @@ namespace CustomSabersLite.Services;
 
 internal class GameResourcesProvider : IInitializable
 {
-    private readonly DiContainer container;
     private readonly SaberTrailRenderer trailRendererPrefab;
     private readonly GameObject saberModelPrefab;
 
-    private GameResourcesProvider(DiContainer container)
+    private GameResourcesProvider()
     {
-        this.container = container;
         trailRendererPrefab = LoadAsset<SaberTrailRenderer>("Assets/Prefabs/Effects/Sabers/SaberTrailRenderer.prefab");
         saberModelPrefab = LoadPrefab("Assets/Prefabs/Sabers/BasicSaberModel.prefab");
     }
@@ -25,10 +23,7 @@ internal class GameResourcesProvider : IInitializable
     public Material DefaultTrailMaterial => trailRendererPrefab._meshRenderer.material;
     
     public SaberTrailRenderer CreateNewSaberTrailRenderer() => 
-        container.InstantiatePrefabForComponentAt<SaberTrailRenderer>(
-            trailRendererPrefab,
-            Vector3.zero, Quaternion.identity,
-            null);
+        Instantiate(trailRendererPrefab, Vector3.zero, Quaternion.identity);
 
     public GameObject CreateNewDefaultSaber()
     {
