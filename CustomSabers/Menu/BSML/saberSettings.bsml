@@ -56,7 +56,7 @@
                          hover-hint="Modify the girth of the saber model - has no effect on hit box"/>
 	<!-- Saber rotation -->
 	<toggleable-slider slider-value="SaberRotation" toggle-value="OverrideSaberRotation"
-						text="Saber Rotation" src="CustomSabersLite.Resources.saber-width.png"
+						text="Saber Rotation" src="CustomSabersLite.Resources.saber-rotation.png"
 					    min="0" max="360" increment="1"
 						apply-on-change="true" bind-values="true" format-string="{0:##0}"
 						hover-hint="Modify the rotation of the saber model - has no effect on hit box"/>

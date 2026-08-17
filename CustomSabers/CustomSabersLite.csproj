@@ -26,12 +26,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')"/>
-        <None Include="CustomSabersLite.csproj.user" Condition="Exists('CustomSabersLite.csproj.user')"/>
+        <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
+        <None Include="CustomSabersLite.csproj.user" Condition="Exists('CustomSabersLite.csproj.user')" />
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Include="Menu\BSML\*.bsml" />
+        <None Remove="Resources\saber-rotation.png" />
         <EmbeddedResource Include="Resources\CustomSaber.dll" />
         <EmbeddedResource Include="Resources\beatmods.png" />
         <EmbeddedResource Include="Resources\defaultsabers-image.jpg" />
@@ -45,6 +46,9 @@
         <EmbeddedResource Include="Resources\preview-static.png" />
         <EmbeddedResource Include="Resources\reload.png" />
         <EmbeddedResource Include="Resources\saber-length.png" />
+        <EmbeddedResource Include="Resources\saber-rotation.png">
+          <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </EmbeddedResource>
         <EmbeddedResource Include="Resources\saber-width.png" />
         <EmbeddedResource Include="Resources\sort-ascending.png" />
         <EmbeddedResource Include="Resources\sort-descending.png" />
